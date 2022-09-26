@@ -86,7 +86,7 @@ def test_InfoMessage_get_message(input_data, expected):
     assert callable(info_message.get_message), (
         'Проверьте, что `get_message` в классе `InfoMessage` - это метод.'
     )
-    result = info_message.get_message()
+    result = info_message.get_message
     assert isinstance(result, str), (
         'Метод `get_message` в классе `InfoMessage`'
         'должен возвращать значение типа `str`'
