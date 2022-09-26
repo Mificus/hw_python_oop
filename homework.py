@@ -1,5 +1,3 @@
-# pytest 6  ошибок выводит. Подскажите куда копать
-
 class InfoMessage:
     """Информационное сообщение о тренировке."""
 
@@ -20,7 +18,7 @@ class InfoMessage:
         return (f'Тип тренировки: {self.training_type}; '
                 f'Длительность: {self.duration:.3f} ч.; '
                 f'Дистанция: {self.distance:.3f} км; '
-                f'Ср.скорость: {self.speed:.3f} км/ч; '
+                f'Ср. скорость: {self.speed:.3f} км/ч; '
                 f'Потрачено ккал: {self.calories:.3f}.'
                 )
 
@@ -58,40 +56,49 @@ class Training:
                            self.duration,
                            self.get_distance(),
                            self.get_mean_speed(),
-                           self.get_spent_calories())
+                           self.get_spent_calories()
+                           )
 
 
 class Running(Training):
     """Тренировка: бег."""
-    coeff_calorie_1 = 18
-    coeff_calorie_2 = 20
+    coeff_calorie_1: int = 18
+    coeff_calorie_2: int = 20
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        return ((self.coeff_calorie_1 * self.get_mean_speed()
+
+        return ((self.coeff_calorie_1
+                 * self.get_mean_speed()
                  - self.coeff_calorie_2)
-                * self.weight / self.M_IN_KM) * self.duration * 60
+                * self.weight / self.M_IN_KM
+                * (self.duration * 60))
 
 
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
-    LEN_STEP = 0.65
-    M_IN_KM = 1000
+    LEN_STEP: float = 0.65
+    M_IN_KM: int = 1000
 
-    def __init__(self, action, duration, weight, height):
+    def __init__(self,
+                 action: int,
+                 duration: float,
+                 weight: float,
+                 height: float):
         super().__init__(action, duration, weight)
         self.height = height
 
     def get_spent_calories(self) -> float:
-        return (0.035 * self.weight + (self.get_mean_speed()
-                                       ** 2 // self.height)
-                * 0.029 * self.weight) * self.duration * 60
+        return (0.035 * self.weight
+                + (self.get_mean_speed() ** 2
+                   // self.height) * 0.029
+                * self.weight) * (self.duration * 60)
 
 
 class Swimming(Training):
     """Тренировка: плавание."""
-    LEN_STEP = 1.38
-    M_IN_KM = 1000
+    LEN_STEP: float = 1.38
+    M_IN_KM: int = 1000
 
     def __init__(self, action, duration, weight, length_pool, count_pool):
         super().__init__(action, duration, weight)
@@ -108,12 +115,10 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    dct_training = {
-        'SWM': Swimming,
-        'RUN': Running,
-        'WLK': SportsWalking
-    }
-    return dct_training[workout_type](*data)
+    dict_training = {'SWM': Swimming,
+                     'RUN': Running,
+                     'WLK': SportsWalking}
+    return dict_training[workout_type](*data)
 
 
 def main(training: Training) -> None:
