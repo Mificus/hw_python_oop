@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-from typing import List, Dict, Type, Union
+from typing import List, Dict, Type
 
 
 @dataclass
@@ -106,8 +106,8 @@ class Swimming(Training):
         self.count_pool = count_pool
 
     def get_mean_speed(self) -> float:
-        return self.length_pool * self.count_pool / (
-            self.M_IN_KM) / self.duration
+        return (self.length_pool * self.count_pool
+                / self.M_IN_KM / self.duration)
 
     def get_spent_calories(self) -> float:
 
@@ -117,20 +117,24 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: List[float]) -> Training:
     """Прочитать данные полученные от датчиков."""
-    dict_training: Dict[str](Type[Union[float]]) = {'SWM': Swimming,
-                                                    'RUN': Running,
-                                                    'WLK': SportsWalking}
+    dict_training: Dict[str, Type[Training]] = {'SWM': Swimming,
+                                                'RUN': Running,
+                                                'WLK': SportsWalking}
 
     try:
         return dict_training[workout_type](*data)
-    except Exception:
-        print('Error Training_type')
+    except KeyError:
+        raise KeyError('Переданный тип тренировки отсутствует')
 
 
 def main(training: Training) -> None:
     """Главная функция."""
-    info = training.show_training_info()
-    print(info.get_message())
+    try:
+        info = training.show_training_info()
+        message = info.get_message()
+    except KeyError as e:
+        message = e
+    print(message)
 
 
 if __name__ == '__main__':
